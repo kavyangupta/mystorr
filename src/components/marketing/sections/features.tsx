@@ -1,10 +1,10 @@
-import { Reveal } from "@/components/marketing/reveal";
+import { Reveal, RevealPop } from "@/components/marketing/reveal";
 import { FEATURES } from "@/lib/marketing-content";
 
 export function Features() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#F5F3FF] py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-white bg-dots py-20 sm:py-24">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal className="text-center">
           <p className="text-sm font-bold uppercase tracking-wider text-brand">
             Everything you need
@@ -16,13 +16,13 @@ export function Features() {
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
-            <Reveal key={f.title} delay={(i % 3) * 100}>
-              <div className="card-lift h-full rounded-2xl border border-white/60 bg-white/70 p-6 shadow-card backdrop-blur">
+            <RevealPop key={f.title} delay={(i % 3) * 0.1}>
+              <div className="card-lift h-full rounded-2xl border border-white/60 bg-white/80 p-6 shadow-card backdrop-blur">
                 <span className="text-3xl">{f.emoji}</span>
                 <h3 className="mt-4 text-lg font-bold text-ink">{f.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>
               </div>
-            </Reveal>
+            </RevealPop>
           ))}
         </div>
       </div>

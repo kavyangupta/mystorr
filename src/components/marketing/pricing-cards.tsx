@@ -3,15 +3,16 @@ import { Check } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PRICING_TIERS } from "@/lib/marketing-content";
+import { Reveal } from "@/components/marketing/reveal";
 
 export function PricingCards() {
   return (
     <div className="mx-auto grid max-w-3xl gap-6 sm:grid-cols-2">
-      {PRICING_TIERS.map((tier) => (
+      {PRICING_TIERS.map((tier, i) => (
+        <Reveal key={tier.name} delay={i * 0.12} className="h-full">
         <div
-          key={tier.name}
           className={cn(
-            "card-lift relative flex flex-col rounded-2xl bg-white p-7",
+            "card-lift relative flex h-full flex-col rounded-2xl bg-white p-7",
             tier.highlight
               ? "border-2 border-brand shadow-[0_8px_30px_rgba(83,74,183,0.18)]"
               : "border border-line shadow-card"
@@ -58,6 +59,7 @@ export function PricingCards() {
           </Link>
           <p className="mt-3 text-center text-xs text-muted">{tier.note}</p>
         </div>
+        </Reveal>
       ))}
     </div>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { MystorrLogo } from "@/components/marketing/logo";
 
 const LINKS = [
   { href: "/how-it-works", label: "How it works" },
@@ -40,12 +41,8 @@ export function MarketingNav() {
       )}
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="text-xl font-extrabold tracking-tight text-brand"
-          onClick={() => setOpen(false)}
-        >
-          Mystorr
+        <Link href="/" onClick={() => setOpen(false)} aria-label="Mystorr home">
+          <MystorrLogo />
         </Link>
 
         {/* Center links — desktop */}

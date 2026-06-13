@@ -1,59 +1,102 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
-/**
- * Fade-in-on-scroll wrapper.
- *
- * SSR / no-JS default: fully visible (no `.reveal` class) so content is never
- * hidden if JavaScript fails. On mount we add `.reveal` (hides it), then an
- * IntersectionObserver adds `.reveal-visible` once it scrolls into view.
- * Respects prefers-reduced-motion via the CSS guard in globals.css.
- */
-export function Reveal({
-  children,
-  delay = 0,
-  className,
-  as: Tag = "div",
-}: {
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+type Props = {
   children: React.ReactNode;
   delay?: number;
   className?: string;
-  as?: React.ElementType;
-}) {
-  const ref = React.useRef<HTMLDivElement | null>(null);
-  const [mounted, setMounted] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
+};
 
-  React.useEffect(() => {
-    setMounted(true);
-    const node = ref.current;
-    if (!node) return;
+const viewport = { once: true, margin: "-60px" } as const;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
+/** Fade up on scroll into view. */
+export function Reveal({ children, delay = 0, className }: Props) {
   return (
-    <Tag
-      ref={ref}
-      className={cn(mounted && "reveal", visible && "reveal-visible", className)}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={viewport}
+      transition={{ duration: 0.6, delay, ease: EASE }}
     >
       {children}
-    </Tag>
+    </motion.div>
+  );
+}
+
+/** Slide in from the left on scroll. */
+export function RevealLeft({ children, delay = 0, className }: Props) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, x: -48 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={viewport}
+      transition={{ duration: 0.6, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Slide in from the right on scroll. */
+export function RevealRight({ children, delay = 0, className }: Props) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, x: 48 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={viewport}
+      transition={{ duration: 0.6, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Pop in with a slight scale on scroll. */
+export function RevealPop({ children, delay = 0, className }: Props) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, scale: 0.92, y: 16 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={viewport}
+      transition={{ duration: 0.5, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Fade up on page load (mount), no scroll trigger. */
+export function LoadUp({ children, delay = 0, className }: Props) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** Slide in from the right on page load (mount). */
+export function LoadRight({ children, delay = 0, className }: Props) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, x: 56 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.7, delay, ease: EASE }}
+    >
+      {children}
+    </motion.div>
   );
 }

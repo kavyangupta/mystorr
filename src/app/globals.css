@@ -21,6 +21,15 @@ body {
     overflow: hidden;
   }
 
+  /* Subtle purple dot pattern (Features section backdrop) */
+  .bg-dots {
+    background-image: radial-gradient(
+      rgba(83, 74, 183, 0.13) 1.3px,
+      transparent 1.3px
+    );
+    background-size: 22px 22px;
+  }
+
   /* Gradient text — needs inline-block so the clip box wraps the glyphs (Safari) */
   .text-gradient {
     display: inline-block;
