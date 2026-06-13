@@ -1,92 +1,81 @@
-import Link from "next/link";
-import { Store, IndianRupee, UtensilsCrossed, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { APP_NAME } from "@/lib/utils";
+import type { Metadata } from "next";
+import { MarketingNav } from "@/components/marketing/marketing-nav";
+import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { Reveal } from "@/components/marketing/reveal";
+import { PricingCards } from "@/components/marketing/pricing-cards";
+import { Faq } from "@/components/marketing/faq";
+import { Hero } from "@/components/marketing/sections/hero";
+import { PainPoints } from "@/components/marketing/sections/pain-points";
+import { HowItWorks } from "@/components/marketing/sections/how-it-works";
+import { WhoItsFor } from "@/components/marketing/sections/who-its-for";
+import { Features } from "@/components/marketing/sections/features";
+import { Testimonials } from "@/components/marketing/sections/testimonials";
+import { FinalCta } from "@/components/marketing/sections/final-cta";
+
+export const metadata: Metadata = {
+  title: "Mystorr · Your shop. One link. Share everywhere.",
+  description:
+    "Mystorr turns your products into one beautiful shop link. Take WhatsApp orders, accept UPI payments, and run a daily menu — free, no app needed. Built for Indian sellers.",
+  openGraph: {
+    title: "Mystorr · Your shop. One link. Share everywhere.",
+    description:
+      "Stop losing orders in DMs. Create a free shop link, take WhatsApp orders and accept UPI payments in 10 minutes.",
+  },
+};
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-line bg-white/80 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-app items-center justify-between px-4">
-          <span className="text-lg font-bold tracking-tight text-brand">
-            {APP_NAME}
-          </span>
-          <Link href="/login">
-            <Button variant="brand" size="sm">
-              Get Started
-            </Button>
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white">
+      <MarketingNav />
+      <main>
+        <Hero />
+        <PainPoints />
+        <HowItWorks />
+        <WhoItsFor />
+        <Features />
+        <Testimonials />
 
-      <main className="mx-auto max-w-app px-4">
-        {/* Hero */}
-        <section className="pb-10 pt-12 text-center">
-          <span className="inline-block rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand">
-            Made for India 🇮🇳
-          </span>
-          <h1 className="mt-4 text-[34px] font-extrabold leading-[1.1] tracking-tight text-ink">
-            Your shop. One link.{" "}
-            <span className="text-brand">Share everywhere.</span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-sm text-[15px] leading-relaxed text-muted">
-            For home sellers, food makers, and Instagram businesses across
-            India. Free to start.
-          </p>
-          <Link href="/login" className="mt-7 block">
-            <Button variant="brand" className="w-full text-base">
-              Create your shop
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-          <p className="mt-3 text-xs text-muted">
-            Ready in 10 minutes. No app to download.
-          </p>
+        {/* Pricing */}
+        <section className="bg-background py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <Reveal className="text-center">
+              <p className="text-sm font-bold uppercase tracking-wider text-brand">
+                Pricing
+              </p>
+              <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+                Start free. Upgrade only when you grow.
+              </h2>
+            </Reveal>
+            <div className="mt-12">
+              <Reveal>
+                <PricingCards />
+              </Reveal>
+            </div>
+          </div>
         </section>
 
-        {/* Features */}
-        <section className="space-y-3 pb-12">
-          <FeatureCard
-            icon={<Store className="h-5 w-5" />}
-            title="Beautiful product catalogue"
-            body="Showcase your products on a clean, premium page you'll be proud to share."
-          />
-          <FeatureCard
-            icon={<IndianRupee className="h-5 w-5" />}
-            title="UPI payments built in"
-            body="Customers pay you directly over UPI or order on WhatsApp in one tap."
-          />
-          <FeatureCard
-            icon={<UtensilsCrossed className="h-5 w-5" />}
-            title="Daily menu for home chefs"
-            body="Update today's menu and quantities every morning. Perfect for tiffins."
-          />
+        {/* FAQ */}
+        <section className="bg-white py-20 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <Reveal className="text-center">
+              <p className="text-sm font-bold uppercase tracking-wider text-brand">
+                FAQ
+              </p>
+              <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
+                Questions, answered
+              </h2>
+            </Reveal>
+            <div className="mt-12">
+              <Reveal>
+                <Faq />
+              </Reveal>
+            </div>
+          </div>
         </section>
+
+        <FinalCta />
       </main>
-
-      <footer className="border-t border-line py-8 text-center">
-        <p className="text-sm text-muted">Made with ❤️ in India</p>
-      </footer>
-    </div>
-  );
-}
-
-function FeatureCard({
-  icon,
-  title,
-  body,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-}) {
-  return (
-    <div className="rounded-card bg-card p-4 shadow-card">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand">
-        {icon}
-      </div>
-      <h3 className="mt-3 text-base font-bold text-ink">{title}</h3>
-      <p className="mt-1 text-sm leading-relaxed text-muted">{body}</p>
+      <MarketingFooter />
     </div>
   );
 }
