@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"homepage HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(nohup npm run dev)",
+      "Bash(disown)",
+      "Bash(echo \"launched pid $!\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" --max-time 4 http://localhost:3000/)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(npx tsc *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(pkill -f \"next-server\")",
+      "Bash(nohup npm run dev > /tmp/mystorr-dev.log 2>&1 & disown; echo \"started\")",
+      "Bash(curl -s -o /dev/null http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"home:%{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"storefront\\(unknown\\):%{http_code}\\\\n\" http://localhost:3000/__nonexistent-store__)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Initial MYSTORR commit: complete daily menu mode redesign *)"
+    ]
+  }
+}
