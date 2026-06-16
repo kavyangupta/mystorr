@@ -17,12 +17,19 @@ export function Testimonials() {
         <div className="mt-12 grid gap-5 sm:grid-cols-3">
           {TESTIMONIALS.map((t, i) => (
             <Reveal key={t.name} delay={i * 0.11}>
-              <figure className="card-lift flex h-full flex-col rounded-2xl border border-amber-100 bg-[#FFFBF0] p-6">
-                <span className="text-3xl">{t.emoji}</span>
-                <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-ink">
+              <figure className="card-lift relative flex h-full flex-col overflow-hidden rounded-2xl border border-amber-100 bg-[#FFFBF0] p-6">
+                {/* large decorative quote mark */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-1 -top-3 select-none font-serif text-[88px] leading-none text-brand/15"
+                >
+                  &rdquo;
+                </span>
+                <span className="relative text-3xl">{t.emoji}</span>
+                <blockquote className="relative mt-4 flex-1 text-sm leading-relaxed text-ink">
                   &ldquo;{t.quote}&rdquo;
                 </blockquote>
-                <figcaption className="mt-5">
+                <figcaption className="relative mt-5">
                   <p className="text-sm font-bold text-ink">{t.name}</p>
                   <p className="text-xs text-muted">{t.location}</p>
                 </figcaption>

@@ -39,6 +39,16 @@ body {
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
+
+  /* Subtle rangoli-inspired radial pattern (Final CTA backdrop, very low opacity) */
+  .bg-rangoli {
+    background-image:
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.5) 0, rgba(255, 255, 255, 0.5) 2px, transparent 2.5px),
+      radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.35) 0, rgba(255, 255, 255, 0.35) 1.5px, transparent 2px),
+      radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.35) 0, rgba(255, 255, 255, 0.35) 1.5px, transparent 2px);
+    background-size: 48px 48px, 48px 48px, 48px 48px;
+    background-position: 0 0, 0 0, 0 0;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -75,6 +85,28 @@ body {
   100% {
     background-position: 0% 50%;
   }
+}
+
+/* Confetti burst (onboarding "shop is live" celebration) */
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(105vh) rotate(720deg);
+  }
+}
+.confetti-piece {
+  position: fixed;
+  top: 0;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  animation: confetti-fall linear forwards;
+  pointer-events: none;
+  z-index: 60;
 }
 
 /* Reveal-on-scroll: default visible (SSR / no-JS safe). The Reveal component
@@ -133,6 +165,9 @@ body {
   .animate-float,
   .gradient-pan {
     animation: none !important;
+  }
+  .confetti-piece {
+    display: none !important;
   }
   .card-lift,
   .btn-glow {

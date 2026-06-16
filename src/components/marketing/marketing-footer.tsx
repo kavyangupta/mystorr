@@ -3,8 +3,7 @@ import { MystorrLogo } from "@/components/marketing/logo";
 
 const PRODUCT_LINKS = [
   { href: "/how-it-works", label: "How it works" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/login", label: "Get Started" },
+  { href: "/login", label: "Create free shop" },
 ];
 
 const COMPANY_LINKS = [
@@ -20,8 +19,8 @@ export function MarketingFooter() {
           <div className="max-w-xs">
             <MystorrLogo variant="light" />
             <p className="mt-4 text-sm leading-relaxed text-white/60">
-              Your shop. One link. Share everywhere. Focus on what you love — we
-              handle the rest.
+              Mystorr — Your shop. One link. Everywhere. Customers browse and pay
+              directly via UPI. No more DM chaos.
             </p>
           </div>
 
@@ -60,7 +59,7 @@ export function MarketingFooter() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/50 sm:flex-row">
-          <p>Made with ❤️ in India</p>
+          <p>Made with ❤️ in India · Free for Indian sellers</p>
           <p>© 2025 Mystorr</p>
         </div>
       </div>

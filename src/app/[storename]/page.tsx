@@ -1,12 +1,11 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { StoreProductCard } from "./store-product-card";
 import { MenuStorefront } from "./menu-storefront";
-import { WhatsAppIcon } from "@/components/icons";
-import { whatsappChatLink, APP_NAME } from "@/lib/utils";
+import { StoreGrowthBanner, StoreFooter } from "./store-chrome";
+import { APP_NAME } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -72,6 +71,7 @@ export default async function StorefrontPage({
 
   return (
     <div className="min-h-screen bg-background">
+      <StoreGrowthBanner />
       <div className="mx-auto max-w-app px-4 pb-6 pt-4">
         {!store.is_open && (
           <div className="mb-4 rounded-lg bg-zinc-200 px-4 py-2.5 text-center text-sm font-medium text-zinc-700">
@@ -133,17 +133,6 @@ export default async function StorefrontPage({
             </a>
           )}
 
-          {store.whatsapp_number && (
-            <a
-              href={whatsappChatLink(store.whatsapp_number)}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3.5 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-lg bg-whatsapp text-sm font-semibold text-white"
-            >
-              <WhatsAppIcon className="h-4 w-4" />
-              Chat on WhatsApp
-            </a>
-          )}
         </header>
 
         {/* Menu banner */}
@@ -186,11 +175,7 @@ export default async function StorefrontPage({
         </section>
 
         {/* Footer — viral loop */}
-        <footer className="mt-6 pb-6 pt-2 text-center">
-          <Link href="/" className="text-xs text-muted hover:text-brand">
-            ⚡ Made with {APP_NAME}
-          </Link>
-        </footer>
+        <StoreFooter />
       </div>
     </div>
   );

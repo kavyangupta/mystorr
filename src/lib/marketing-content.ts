@@ -1,30 +1,76 @@
-// Shared marketing copy for the homepage, /how-it-works and /pricing.
-// Centralised so the three routes never drift out of sync.
+// Shared marketing copy for the homepage and /how-it-works.
+// Centralised so routes never drift out of sync.
 
+export type Lang = "en" | "hi";
+
+// ---------------------------------------------------------------------------
+// Hero (bilingual)
+// ---------------------------------------------------------------------------
+export const HERO = {
+  badge: "🇮🇳 Built for Indian sellers",
+  headline: {
+    en: "Your products. One link. Everywhere.",
+    hi: "आपके products। एक link। हर जगह।",
+  },
+  sub: {
+    en: "Stop explaining your products in every DM. Create a beautiful shop link in 10 minutes. Share it on WhatsApp, Instagram bio, society groups. Customers browse everything and order instantly.",
+    hi: "हर DM में photos भेजना बंद करो। एक beautiful shop link बनाओ और सबको share करो।",
+  },
+  cta: {
+    en: "Create your free shop — it's free →",
+    hi: "अपनी free shop बनाओ →",
+  },
+  secondaryCta: { en: "See how it works", hi: "कैसे काम करता है" },
+  trust: [
+    "No app needed",
+    "Works on any phone",
+    "Free forever",
+    "Your money goes direct to your UPI",
+  ],
+};
+
+// ---------------------------------------------------------------------------
+// Pain points (bilingual single-line cards)
+// ---------------------------------------------------------------------------
 export type PainPoint = {
   emoji: string;
-  title: string;
-  body: string;
+  en: string;
+  hi: string;
 };
 
 export const PAIN_POINTS: PainPoint[] = [
   {
     emoji: "😩",
-    title: "45 minutes a day lost in DMs",
-    body: "Repeating prices, sharing the same photos, copying addresses — all by hand, every single order.",
+    en: "Sending the same product photos and prices to 20 different customers every day",
+    hi: "रोज़ 20 लोगों को same photos और prices भेजना",
   },
   {
     emoji: "📱",
-    title: "Customers can't find last week's products",
-    body: "Your catalogue is buried under 200 WhatsApp messages. People give up before they buy.",
+    en: "Your best products buried under 500 old WhatsApp messages and Instagram posts",
+    hi: "Best products पुराने messages में दब जाते हैं",
   },
   {
     emoji: "💸",
-    title: "Manually matching UPI payments",
-    body: "Scrolling your bank app, cross-checking screenshots, hoping nobody forgot to pay.",
+    en: "Customers asking 'kya hai tumhare paas?' when everything is right there in your old posts",
+    hi: "Customers पूछते हैं 'क्या है?' जब सब कुछ वहीं है",
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Trust badges
+// ---------------------------------------------------------------------------
+export type TrustBadge = { emoji: string; text: string };
+
+export const TRUST_BADGES: TrustBadge[] = [
+  { emoji: "🔒", text: "Your money goes direct to your UPI — we never touch it" },
+  { emoji: "📱", text: "Works on any Android or iPhone — no app download" },
+  { emoji: "🇮🇳", text: "Made in India for Indian sellers" },
+  { emoji: "⚡", text: "Free forever — no hidden charges ever" },
+];
+
+// ---------------------------------------------------------------------------
+// How it works
+// ---------------------------------------------------------------------------
 export type Step = {
   number: string;
   title: string;
@@ -35,27 +81,30 @@ export type Step = {
 export const STEPS: Step[] = [
   {
     number: "1",
-    title: "Create your shop",
-    body: "Sign in with Google and pick your shop link. No app to download, nothing to install.",
+    title: "Create your free shop",
+    body: "Sign up, add your shop name and photo. Takes 2 minutes.",
     detail:
-      "Add your name, photo, bio and WhatsApp number. Your shop is live at mystorr.in/yourname in under two minutes.",
+      "Sign in with Google, pick your shop link and add a name and photo. Your shop is live at mystorr.vercel.app/yourname before your chai goes cold.",
   },
   {
     number: "2",
     title: "Add your products",
-    body: "Snap a photo, set a price, done. Run a fixed catalogue or a fresh daily menu.",
+    body: "Upload photos, set prices. Your permanent catalogue is ready.",
     detail:
-      "Mark items sold out, set today's specials, add dietary tags and prep times. Update from your phone whenever you like.",
+      "Snap a photo, set a price, done. Mark items sold out and update from your phone anytime. Your catalogue stays organised — never buried in chat again.",
   },
   {
     number: "3",
-    title: "Share your one link",
-    body: "Drop it in your Instagram bio, WhatsApp status, or family group. Orders come straight to you.",
+    title: "Share one link everywhere",
+    body: "Put it in your Instagram bio, WhatsApp bio, society group. Done.",
     detail:
-      "Customers browse, tap Order, and reach you on WhatsApp with the item pre-filled. UPI payment links are built in.",
+      "One link for Instagram, WhatsApp status and every family group. Customers browse everything and pay you directly via UPI — organised, confirmed, tracked.",
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Who it's for
+// ---------------------------------------------------------------------------
 export type Audience = {
   emoji: string;
   title: string;
@@ -64,27 +113,30 @@ export type Audience = {
 
 export const AUDIENCE: Audience[] = [
   {
-    emoji: "🍱",
-    title: "Home chefs & tiffin services",
-    body: "Post today's menu, take pre-orders, close ordering at your cut-off time.",
-  },
-  {
     emoji: "💍",
-    title: "Jewellery makers",
-    body: "Show every piece in a clean gallery instead of a messy photo dump.",
+    title: "Jewellery & accessories",
+    body: "Show every piece in a clean gallery customers can shop in seconds.",
   },
   {
     emoji: "👗",
-    title: "Clothing & boutiques",
+    title: "Clothing, sarees & fashion",
     body: "Drop new collections with one link your followers can shop instantly.",
   },
   {
     emoji: "🏠",
     title: "Homemade products",
-    body: "Candles, pickles, art, crafts — anything you make, beautifully listed.",
+    body: "Pickles, candles, skincare, snacks — anything you make, beautifully listed.",
+  },
+  {
+    emoji: "🍱",
+    title: "Home chefs & tiffin",
+    body: "Post today's menu and take pre-orders with a special daily menu mode.",
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Features (used on /how-it-works recap)
+// ---------------------------------------------------------------------------
 export type Feature = {
   emoji: string;
   title: string;
@@ -95,7 +147,17 @@ export const FEATURES: Feature[] = [
   {
     emoji: "⚡",
     title: "Ready in 10 minutes",
-    body: "From sign-in to shareable shop link before your chai goes cold.",
+    body: "From sign-in to a shareable shop link before your chai goes cold.",
+  },
+  {
+    emoji: "💸",
+    title: "UPI, direct to you",
+    body: "Customers pay to your UPI ID — organised, confirmed, tracked. No middleman, no commission.",
+  },
+  {
+    emoji: "🖼️",
+    title: "A beautiful catalogue",
+    body: "Every product in a clean gallery instead of buried under old chats.",
   },
   {
     emoji: "🍱",
@@ -103,19 +165,9 @@ export const FEATURES: Feature[] = [
     body: "Built for kitchens — today's specials, ordering hours and sold-out tags.",
   },
   {
-    emoji: "💸",
-    title: "UPI, direct to you",
-    body: "Customers pay to your UPI ID. No middleman, no commission cut.",
-  },
-  {
-    emoji: "💬",
-    title: "WhatsApp ordering",
-    body: "Every order lands in your chat with the item and price pre-filled.",
-  },
-  {
     emoji: "📊",
     title: "Order dashboard",
-    body: "See what's coming in and keep track without a single spreadsheet.",
+    body: "See every order coming in and keep track without a single spreadsheet.",
   },
   {
     emoji: "🔗",
@@ -124,6 +176,9 @@ export const FEATURES: Feature[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Testimonials
+// ---------------------------------------------------------------------------
 export type Testimonial = {
   quote: string;
   name: string;
@@ -134,102 +189,23 @@ export type Testimonial = {
 export const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "I used to spend my whole evening replying to the same questions. Now I just share my link and the orders come in while I cook.",
+      "Pehle roz 45 minute DM mein orders lete the. Ab society group mein link share kiya aur orders khud aate hain.",
     name: "Meena K.",
-    location: "Tiffin service, Delhi",
+    location: "Delhi",
     emoji: "🍛",
   },
   {
     quote:
-      "My jewellery finally looks professional. Customers scroll the whole collection and message me only when they're ready to buy.",
+      "Meri jewellery ab ek jagah dikhti hai. Customers khud dekh ke order karte hain.",
     name: "Priya S.",
-    location: "Jewellery maker, Mumbai",
+    location: "Mumbai",
     emoji: "💍",
   },
   {
     quote:
-      "Setup took ten minutes and it was free. I got three orders the same day I put the link on my status.",
+      "10 minute mein shop ready ho gayi. Customers ko link bheja aur same din 3 orders aaye.",
     name: "Sunita R.",
-    location: "Homemade snacks, Bangalore",
+    location: "Bangalore",
     emoji: "🍪",
-  },
-];
-
-export type PricingTier = {
-  name: string;
-  price: string;
-  period: string;
-  tagline: string;
-  features: string[];
-  cta: string;
-  highlight: boolean;
-  note: string;
-};
-
-export const PRICING_TIERS: PricingTier[] = [
-  {
-    name: "Free Forever",
-    price: "₹0",
-    period: "",
-    tagline: "Everything you need to start selling today.",
-    features: [
-      "Up to 8 products",
-      "Your own shop link",
-      "WhatsApp ordering",
-      "UPI payment links",
-      "Daily menu mode",
-    ],
-    cta: "Create your free shop",
-    highlight: false,
-    note: "No credit card needed",
-  },
-  {
-    name: "Pro",
-    price: "₹299",
-    period: "/month",
-    tagline: "For sellers ready to grow without limits.",
-    features: [
-      "Unlimited products",
-      "Everything in Free",
-      "Priority support",
-      "Advanced menu scheduling",
-      "Remove Mystorr branding",
-    ],
-    cta: "Go Pro",
-    highlight: true,
-    note: "Cancel anytime",
-  },
-];
-
-export type FaqItem = {
-  question: string;
-  answer: string;
-};
-
-export const FAQ_ITEMS: FaqItem[] = [
-  {
-    question: "Is it really free?",
-    answer:
-      "Yes. The Free Forever plan lets you list up to 8 products, take WhatsApp orders and share UPI payment links — with no credit card and no time limit. Upgrade to Pro only when you want unlimited products.",
-  },
-  {
-    question: "Do my customers need to download anything?",
-    answer:
-      "No. Your shop is just a web link. Customers tap it, browse your products, and order through WhatsApp — no app, no sign-up, nothing to install.",
-  },
-  {
-    question: "How do I get paid?",
-    answer:
-      "Payments go straight to your own UPI ID. Mystorr generates the payment link, but the money lands directly in your account — we never touch it and take no commission.",
-  },
-  {
-    question: "What is daily menu mode?",
-    answer:
-      "It's a special layout for kitchens and tiffin services. You can post today's specials, set ordering hours, mark items sold out, and add prep times or dietary tags — perfect for food that changes every day.",
-  },
-  {
-    question: "Can I use my own domain?",
-    answer:
-      "Your shop lives at mystorr.in/yourname for free. Custom domains are on our roadmap for Pro sellers — reach out and we'll keep you posted.",
   },
 ];

@@ -6,6 +6,11 @@ export function FinalCta() {
   return (
     <section className="bg-white px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-[#534AB7] via-[#6D4BC9] to-[#7C3AED] px-6 py-16 text-center gradient-pan">
+        {/* subtle rangoli-inspired pattern */}
+        <div
+          aria-hidden
+          className="bg-rangoli pointer-events-none absolute inset-0 opacity-[0.12]"
+        />
         <div
           aria-hidden
           className="pointer-events-none absolute -left-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl animate-float"

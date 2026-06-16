@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MarketingNav } from "@/components/marketing/marketing-nav";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
+import { LanguageProvider } from "@/components/marketing/lang-context";
 import { Reveal } from "@/components/marketing/reveal";
 import { FinalCta } from "@/components/marketing/sections/final-cta";
 import { STEPS, FEATURES } from "@/lib/marketing-content";
@@ -11,11 +12,12 @@ import { STEPS, FEATURES } from "@/lib/marketing-content";
 export const metadata: Metadata = {
   title: "How it works · Mystorr",
   description:
-    "See how Mystorr works — create your shop, add products, and share one link. Take WhatsApp orders and UPI payments in minutes.",
+    "See how Mystorr works — create your shop, add products, and share one link. Customers browse everything and pay directly via UPI in minutes.",
 };
 
 export default function HowItWorksPage() {
   return (
+    <LanguageProvider>
     <div className="min-h-screen bg-white">
       <MarketingNav />
       <main>
@@ -64,7 +66,7 @@ export default function HowItWorksPage() {
             </Reveal>
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {FEATURES.map((f, i) => (
-                <Reveal key={f.title} delay={(i % 3) * 100}>
+                <Reveal key={f.title} delay={(i % 3) * 0.1}>
                   <div className="card-lift h-full rounded-2xl border border-line bg-white p-6 shadow-card">
                     <span className="text-3xl">{f.emoji}</span>
                     <h3 className="mt-4 text-lg font-bold text-ink">{f.title}</h3>
@@ -88,5 +90,6 @@ export default function HowItWorksPage() {
       </main>
       <MarketingFooter />
     </div>
+    </LanguageProvider>
   );
 }

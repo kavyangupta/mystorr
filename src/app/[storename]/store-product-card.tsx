@@ -4,13 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import { IndianRupee } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { WhatsAppIcon } from "@/components/icons";
-import {
-  formatPrice,
-  whatsappOrderLink,
-  upiPayLink,
-  cn,
-} from "@/lib/utils";
+import { formatPrice, upiPayLink, cn } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
 export function StoreProductCard({
@@ -27,17 +21,6 @@ export function StoreProductCard({
   const limited =
     product.quantity_available > 0 && product.quantity_available !== -1;
   const disabled = soldOut || !storeOpen;
-
-  function orderOnWhatsApp() {
-    if (disabled || !store.whatsapp_number) return;
-    const url = whatsappOrderLink({
-      whatsapp: store.whatsapp_number,
-      productName: product.name,
-      price: product.price,
-      displayName: store.display_name,
-    });
-    window.open(url, "_blank");
-  }
 
   async function payViaUpi() {
     if (disabled || !store.upi_id) return;
@@ -101,26 +84,14 @@ export function StoreProductCard({
         </div>
 
         <button
-          onClick={orderOnWhatsApp}
-          disabled={disabled}
-          className={cn(
-            "mt-2.5 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg text-xs font-semibold text-white transition-colors",
-            disabled ? "bg-zinc-300" : "bg-whatsapp hover:bg-whatsapp/90"
-          )}
-        >
-          <WhatsAppIcon className="h-3.5 w-3.5" />
-          Order on WhatsApp
-        </button>
-
-        <button
           onClick={payViaUpi}
-          disabled={disabled}
+          disabled={disabled || !store.upi_id}
           className={cn(
-            "mt-1.5 flex h-10 w-full items-center justify-center gap-1 rounded-lg text-xs font-semibold text-white transition-colors",
-            disabled ? "bg-zinc-300" : "bg-upi hover:bg-upi/90"
+            "mt-2.5 flex h-11 w-full items-center justify-center gap-1.5 rounded-lg text-sm font-bold text-white transition-colors",
+            disabled || !store.upi_id ? "bg-zinc-300" : "bg-upi hover:bg-upi/90"
           )}
         >
-          <IndianRupee className="h-3.5 w-3.5" />
+          <IndianRupee className="h-4 w-4" />
           Pay via UPI
         </button>
       </div>

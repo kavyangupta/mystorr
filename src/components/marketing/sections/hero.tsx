@@ -1,10 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PhoneMockup } from "@/components/marketing/phone-mockup";
 import { LoadUp, LoadRight } from "@/components/marketing/reveal";
+import { useLang } from "@/components/marketing/lang-context";
+import { HERO } from "@/lib/marketing-content";
+
+// Slowly floating product emojis in the hero backdrop.
+const FLOATERS = [
+  { e: "💍", className: "left-[6%] top-[18%]", delay: "0s", size: "text-4xl" },
+  { e: "👗", className: "right-[8%] top-[12%]", delay: "1.2s", size: "text-5xl" },
+  { e: "🏺", className: "left-[12%] bottom-[14%]", delay: "2.1s", size: "text-4xl" },
+  { e: "🍛", className: "right-[14%] bottom-[18%]", delay: "0.6s", size: "text-5xl" },
+];
 
 export function Hero() {
+  const { lang } = useLang();
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#534AB7] via-[#6D4BC9] to-[#7C3AED] gradient-pan">
       {/* floating blobs */}
@@ -18,25 +32,40 @@ export function Hero() {
         style={{ animationDelay: "1.5s" }}
       />
 
+      {/* floating product emojis */}
+      {FLOATERS.map((f) => (
+        <span
+          key={f.e}
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute select-none opacity-40 animate-float drop-shadow-lg",
+            f.size,
+            f.className
+          )}
+          style={{ animationDelay: f.delay }}
+        >
+          {f.e}
+        </span>
+      ))}
+
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:pb-28 lg:pt-24">
         {/* left — copy */}
         <div className="text-center lg:text-left">
           <LoadUp delay={0}>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white backdrop-blur">
-              🇮🇳 Built for Indian sellers
+              {HERO.badge}
             </span>
           </LoadUp>
 
           <LoadUp delay={0.1}>
-            <h1 className="mt-5 text-[40px] font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[64px]">
-              Stop losing orders in DMs.
+            <h1 className="mt-5 text-[38px] font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-[60px]">
+              {HERO.headline[lang]}
             </h1>
           </LoadUp>
 
           <LoadUp delay={0.2}>
             <p className="mx-auto mt-5 max-w-md text-lg leading-relaxed text-white/85 lg:mx-0">
-              Mystorr turns your products into one beautiful shop link. Focus on
-              what you love — we handle the orders, payments and chaos.
+              {HERO.sub[lang]}
             </p>
           </LoadUp>
 
@@ -49,7 +78,7 @@ export function Hero() {
                   "btn-glow w-full bg-white px-6 text-base text-brand hover:bg-white sm:w-auto"
                 )}
               >
-                Create your free shop →
+                {HERO.cta[lang]}
               </Link>
               <Link
                 href="/how-it-works"
@@ -58,15 +87,16 @@ export function Hero() {
                   "w-full border border-white/30 px-6 text-base text-white hover:bg-white/10 hover:text-white sm:w-auto"
                 )}
               >
-                See how it works
+                {HERO.secondaryCta[lang]}
               </Link>
             </div>
           </LoadUp>
 
           <LoadUp delay={0.4}>
-            <p className="mt-6 text-sm font-medium text-white/75">
-              ✓ Free forever&nbsp;&nbsp; ✓ No app needed&nbsp;&nbsp; ✓ Setup in 10
-              minutes
+            <p className="mt-6 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm font-medium text-white/75 lg:justify-start">
+              {HERO.trust.map((t) => (
+                <span key={t}>✓ {t}</span>
+              ))}
             </p>
           </LoadUp>
         </div>

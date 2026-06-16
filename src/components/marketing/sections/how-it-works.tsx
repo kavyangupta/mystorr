@@ -10,7 +10,7 @@ export function HowItWorks() {
             How it works
           </p>
           <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">
-            From zero to selling in three simple steps
+            Go from DM chaos to organised shop in 10 minutes
           </h2>
         </Reveal>
 

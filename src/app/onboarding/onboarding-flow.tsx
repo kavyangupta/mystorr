@@ -2,14 +2,17 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Check, X, Loader2, ArrowLeft } from "lucide-react";
+import { Check, X, Loader2, ArrowLeft, Copy } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { ImageUpload } from "@/components/image-upload";
 import { useToast } from "@/components/ui/toast";
+import { Confetti } from "@/components/ui/confetti";
+import { WhatsAppIcon } from "@/components/icons";
 import {
   appHost,
+  appUrl,
   sanitizeSlug,
   isValidSlug,
   normalizeWhatsApp,
@@ -74,6 +77,23 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
   const upiValid = isValidUpi(upi);
   const step3Valid = !!normalizedWa && upiValid;
 
+  const liveHost = `${appHost()}/${storeName}`;
+  const liveUrl = `${appUrl()}/${storeName}`;
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(liveUrl);
+      toast("Link copied! Share it everywhere 🎉", "success");
+    } catch {
+      toast("Could not copy — long-press to copy the link", "error");
+    }
+  }
+
+  function shareOnWhatsApp() {
+    const text = `My shop is live! Browse and order here 👇\n${liveUrl}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  }
+
   async function handleCreate() {
     if (!step3Valid || !mode) return;
     setSaving(true);
@@ -92,8 +112,7 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
         instagram_handle: null,
       });
       if (error) throw error;
-      toast("Your store is live!", "success");
-      router.replace("/dashboard");
+      setStep(4); // celebration screen
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Could not create store";
       toast(msg.includes("duplicate") ? "That store URL is taken" : msg, "error");
@@ -105,32 +124,34 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-app px-4 pb-10 pt-6">
         {/* Progress */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between">
-            {step > 1 ? (
-              <button
-                onClick={() => setStep(step - 1)}
-                className="flex items-center gap-1 text-sm text-muted hover:text-ink"
-              >
-                <ArrowLeft className="h-4 w-4" /> Back
-              </button>
-            ) : (
-              <span className="text-sm font-bold text-brand">MYSTORR</span>
-            )}
-            <span className="text-xs text-muted">Step {step} of 3</span>
+        {step <= 3 && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between">
+              {step > 1 ? (
+                <button
+                  onClick={() => setStep(step - 1)}
+                  className="flex items-center gap-1 text-sm text-muted hover:text-ink"
+                >
+                  <ArrowLeft className="h-4 w-4" /> Back
+                </button>
+              ) : (
+                <span className="text-sm font-bold text-brand">MYSTORR</span>
+              )}
+              <span className="text-xs text-muted">Step {step} of 3</span>
+            </div>
+            <div className="mt-3 flex gap-1.5">
+              {[1, 2, 3].map((n) => (
+                <div
+                  key={n}
+                  className={cn(
+                    "h-1.5 flex-1 rounded-full",
+                    n <= step ? "bg-brand" : "bg-line"
+                  )}
+                />
+              ))}
+            </div>
           </div>
-          <div className="mt-3 flex gap-1.5">
-            {[1, 2, 3].map((n) => (
-              <div
-                key={n}
-                className={cn(
-                  "h-1.5 flex-1 rounded-full",
-                  n <= step ? "bg-brand" : "bg-line"
-                )}
-              />
-            ))}
-          </div>
-        </div>
+        )}
 
         {step === 1 && (
           <section>
@@ -266,7 +287,8 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
               How do customers pay you?
             </h1>
             <p className="mt-1 text-sm text-muted">
-              Orders come to WhatsApp, payments over UPI.
+              Customers pay you directly via UPI — money lands straight in your
+              account.
             </p>
 
             <div className="mt-6 space-y-5">
@@ -318,6 +340,53 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
                 Create my store
               </Button>
             </div>
+          </section>
+        )}
+
+        {step === 4 && (
+          <section className="pt-6 text-center">
+            <Confetti />
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-brand to-[#7C3AED] text-4xl shadow-[0_8px_30px_rgba(83,74,183,0.35)]">
+              🎉
+            </div>
+            <h1 className="mt-5 text-3xl font-extrabold leading-tight text-ink">
+              Your shop is live!
+            </h1>
+            <p className="mt-2 text-sm text-muted">
+              Share this link on WhatsApp, your Instagram bio and society groups.
+              Customers can start browsing right away.
+            </p>
+
+            {/* The live link */}
+            <div className="mt-6 rounded-2xl border-2 border-brand/20 bg-brand/5 p-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted">
+                Your shop link
+              </p>
+              <p className="mt-1 break-all text-base font-bold text-brand">
+                {liveHost}
+              </p>
+            </div>
+
+            <button
+              onClick={copyLink}
+              className="mt-4 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-brand text-base font-bold text-white transition-colors hover:bg-brand/90"
+            >
+              <Copy className="h-5 w-5" /> Copy my link
+            </button>
+
+            <button
+              onClick={shareOnWhatsApp}
+              className="mt-3 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-whatsapp text-base font-bold text-white transition-colors hover:bg-whatsapp/90"
+            >
+              <WhatsAppIcon className="h-5 w-5" /> Share on WhatsApp
+            </button>
+
+            <button
+              onClick={() => router.replace("/dashboard")}
+              className="mt-5 text-sm font-semibold text-muted hover:text-ink"
+            >
+              Go to my dashboard →
+            </button>
           </section>
         )}
       </div>

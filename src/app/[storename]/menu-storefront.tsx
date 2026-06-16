@@ -1,17 +1,14 @@
 import Image from "next/image";
-import Link from "next/link";
 import { MapPin, Truck, Bell } from "lucide-react";
-import { WhatsAppIcon } from "@/components/icons";
 import { MenuStatusBar } from "./menu-status-bar";
 import { MenuItemCard } from "./menu-item-card";
+import { StoreGrowthBanner, StoreFooter } from "./store-chrome";
 import {
-  whatsappChatLink,
   countdownLabel,
   istNow,
   daysUntil,
   getOrderingStatus,
   DAY_NAMES,
-  APP_NAME,
 } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
@@ -64,6 +61,7 @@ export function MenuStorefront({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#FFFBF5]">
+      <StoreGrowthBanner />
       {/* subtle food emoji backdrop */}
       <div
         aria-hidden
@@ -127,18 +125,6 @@ export function MenuStorefront({
             <p className="mt-2 inline-flex items-center gap-1 text-xs text-muted">
               <Bell className="h-3 w-3" /> {store.advance_order_notice}
             </p>
-          )}
-
-          {store.whatsapp_number && (
-            <a
-              href={whatsappChatLink(store.whatsapp_number)}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-3.5 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-whatsapp text-sm font-bold text-white"
-            >
-              <WhatsAppIcon className="h-4 w-4" />
-              Chat on WhatsApp
-            </a>
           )}
         </header>
 
@@ -271,11 +257,7 @@ export function MenuStorefront({
         )}
 
         {/* Footer */}
-        <footer className="mt-8 pb-4 text-center">
-          <Link href="/" className="text-xs text-muted hover:text-brand">
-            Made with ❤️ by {APP_NAME}
-          </Link>
-        </footer>
+        <StoreFooter />
       </div>
     </div>
   );

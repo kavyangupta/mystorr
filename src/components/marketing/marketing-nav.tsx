@@ -7,11 +7,9 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MystorrLogo } from "@/components/marketing/logo";
 import { CustomerAvatars } from "@/components/marketing/customer-avatars";
+import { LangToggle } from "@/components/marketing/lang-context";
 
-const LINKS = [
-  { href: "/how-it-works", label: "How it works" },
-  { href: "/pricing", label: "Pricing" },
-];
+const LINKS = [{ href: "/how-it-works", label: "How it works" }];
 
 export function MarketingNav() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -62,13 +60,14 @@ export function MarketingNav() {
           ))}
         </div>
 
-        {/* Right CTA — desktop */}
-        <div className="hidden md:block">
+        {/* Right CTA + language — desktop */}
+        <div className="hidden items-center gap-3 md:flex">
+          <LangToggle />
           <Link
             href="/login"
             className={cn(buttonVariants({ variant: "brand", size: "sm" }), "btn-glow px-5")}
           >
-            Get Started
+            Create free shop
           </Link>
         </div>
 
@@ -98,12 +97,16 @@ export function MarketingNav() {
                 {l.label}
               </Link>
             ))}
+            <div className="mt-4 flex items-center justify-between">
+              <span className="text-sm font-semibold text-muted">Language</span>
+              <LangToggle />
+            </div>
             <Link
               href="/login"
               onClick={() => setOpen(false)}
               className={cn(buttonVariants({ variant: "brand" }), "mt-4 w-full")}
             >
-              Get Started
+              Create free shop
             </Link>
           </div>
         </div>

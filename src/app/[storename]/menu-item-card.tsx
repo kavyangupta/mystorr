@@ -2,36 +2,26 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Minus, Plus, UtensilsCrossed, Clock, Users } from "lucide-react";
+import { Minus, Plus, UtensilsCrossed, Clock, Users, IndianRupee } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { WhatsAppIcon } from "@/components/icons";
-import {
-  formatPrice,
-  whatsappMenuOrderLink,
-  upiPayLink,
-  servesLabel,
-  cn,
-} from "@/lib/utils";
+import { formatPrice, upiPayLink, servesLabel, cn } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
 type Variant = "feature" | "compact" | "preorder";
 type Accent = "orange" | "purple" | "amber";
 
-const ACCENTS: Record<Accent, { badge: string; price: string; button: string }> = {
+const ACCENTS: Record<Accent, { badge: string; price: string }> = {
   orange: {
     badge: "bg-orange-100 text-orange-700",
     price: "text-orange-600",
-    button: "bg-[#F97316] hover:bg-[#ea6a0c]",
   },
   purple: {
     badge: "bg-brand/10 text-brand",
     price: "text-brand",
-    button: "bg-brand hover:bg-brand/90",
   },
   amber: {
     badge: "bg-amber-100 text-amber-800",
     price: "text-amber-700",
-    button: "bg-amber-600 hover:bg-amber-700",
   },
 };
 
@@ -62,29 +52,14 @@ export function MenuItemCard({
   const [qty, setQty] = React.useState(1);
   const total = product.price * qty;
 
-  function orderOnWhatsApp() {
-    if (disabled || !store.whatsapp_number) return;
-    window.open(
-      whatsappMenuOrderLink({
-        whatsapp: store.whatsapp_number,
-        productName: product.name,
-        price: product.price,
-        quantity: qty,
-        displayName: store.display_name,
-        preorder: variant === "preorder",
-      }),
-      "_blank"
-    );
-  }
-
-  async function payViaUpi() {
-    if (disabled || !store.upi_id) return;
+  async function payViaUpi(amount: number, label: string) {
+    if (!store.upi_id) return;
     try {
       await supabase.from("orders").insert({
         store_id: store.id,
         product_id: product.id,
-        product_name: `${qty} × ${product.name}`,
-        amount: total,
+        product_name: label,
+        amount,
         status: "pending",
       });
     } catch {
@@ -93,7 +68,7 @@ export function MenuItemCard({
     window.location.href = upiPayLink({
       upiId: store.upi_id,
       displayName: store.display_name,
-      price: total,
+      price: amount,
     });
   }
 
@@ -129,11 +104,11 @@ export function MenuItemCard({
           </span>
         </div>
         <button
-          onClick={orderOnWhatsApp}
-          disabled={!store.whatsapp_number}
-          className="flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-brand px-3 text-xs font-semibold text-white hover:bg-brand/90 disabled:bg-zinc-300"
+          onClick={() => payViaUpi(product.price, product.name)}
+          disabled={!store.upi_id}
+          className="flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-upi px-3 text-xs font-bold text-white hover:bg-upi/90 disabled:bg-zinc-300"
         >
-          <WhatsAppIcon className="h-3.5 w-3.5" /> Enquire
+          <IndianRupee className="h-3.5 w-3.5" /> Pay via UPI
         </button>
       </div>
     );
@@ -182,14 +157,14 @@ export function MenuItemCard({
             {formatPrice(product.price)}
           </span>
           <button
-            onClick={orderOnWhatsApp}
-            disabled={disabled || !store.whatsapp_number}
+            onClick={() => payViaUpi(product.price, product.name)}
+            disabled={disabled || !store.upi_id}
             className={cn(
-              "mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg text-xs font-semibold text-white transition-colors",
-              disabled || !store.whatsapp_number ? "bg-zinc-300" : a.button
+              "mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg text-xs font-bold text-white transition-colors",
+              disabled || !store.upi_id ? "bg-zinc-300" : "bg-upi hover:bg-upi/90"
             )}
           >
-            <WhatsAppIcon className="h-3.5 w-3.5" /> Order
+            <IndianRupee className="h-3.5 w-3.5" /> Pay via UPI
           </button>
         </div>
       </div>
@@ -300,21 +275,12 @@ export function MenuItemCard({
               </div>
             </div>
 
-            {store.whatsapp_number && (
-              <button
-                onClick={orderOnWhatsApp}
-                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-whatsapp text-sm font-bold text-white hover:bg-whatsapp/90"
-              >
-                <WhatsAppIcon className="h-4 w-4" />
-                Order {qty > 1 ? `${qty} ` : ""}· {formatPrice(total)}
-              </button>
-            )}
-
             {store.upi_id && (
               <button
-                onClick={payViaUpi}
-                className="mt-2 flex h-11 w-full items-center justify-center gap-1.5 rounded-xl border border-upi/30 bg-upi/5 text-sm font-bold text-upi hover:bg-upi/10"
+                onClick={() => payViaUpi(total, `${qty} × ${product.name}`)}
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-upi text-sm font-bold text-white hover:bg-upi/90"
               >
+                <IndianRupee className="h-4 w-4" />
                 Pay {formatPrice(total)} via UPI
               </button>
             )}

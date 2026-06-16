@@ -3,10 +3,10 @@ import { AUDIENCE } from "@/lib/marketing-content";
 
 // Colourful gradient backgrounds, one per audience card.
 const CARD_BG = [
-  "bg-gradient-to-br from-orange-100 to-amber-200 border-orange-200", // home chefs
-  "bg-gradient-to-br from-purple-100 to-violet-200 border-purple-200", // jewellery
-  "bg-gradient-to-br from-pink-100 to-rose-200 border-pink-200", // clothing
-  "bg-gradient-to-br from-green-100 to-emerald-200 border-green-200", // homemade
+  "bg-gradient-to-br from-purple-100 to-violet-200 border-purple-200", // jewellery — soft purple
+  "bg-gradient-to-br from-pink-100 to-rose-200 border-pink-200", // clothing — soft pink
+  "bg-gradient-to-br from-green-100 to-emerald-200 border-green-200", // homemade — light green
+  "bg-gradient-to-br from-amber-100 to-yellow-200 border-amber-200", // home chefs — golden yellow
 ];
 
 export function WhoItsFor() {
