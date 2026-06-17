@@ -5,6 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { StoreProductCard } from "./store-product-card";
 import { MenuStorefront } from "./menu-storefront";
 import { StoreGrowthBanner, StoreFooter } from "./store-chrome";
+import { InitialsAvatar } from "@/components/initials-avatar";
 import { APP_NAME } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
@@ -98,9 +99,7 @@ export default async function StorefrontPage({
                 priority
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-brand/10 text-3xl font-bold text-brand">
-                {store.display_name.charAt(0).toUpperCase()}
-              </div>
+              <InitialsAvatar name={store.display_name} className="text-3xl" />
             )}
           </div>
 

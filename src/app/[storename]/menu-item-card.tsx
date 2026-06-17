@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Minus, Plus, UtensilsCrossed, Clock, Users, IndianRupee } from "lucide-react";
+import { Minus, Plus, Clock, Users, IndianRupee } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { InitialsAvatar } from "@/components/initials-avatar";
 import { formatPrice, upiPayLink, servesLabel, cn } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
@@ -89,9 +90,7 @@ export function MenuItemCard({
               className="object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-orange-300">
-              <UtensilsCrossed className="h-5 w-5" />
-            </div>
+            <InitialsAvatar name={product.name} className="text-base" />
           )}
         </div>
         <div className="min-w-0 flex-1">
@@ -129,9 +128,7 @@ export function MenuItemCard({
               className="object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-orange-200">
-              <UtensilsCrossed className="h-7 w-7" />
-            </div>
+            <InitialsAvatar name={product.name} className="text-2xl" />
           )}
           {badge && (
             <span
@@ -185,9 +182,7 @@ export function MenuItemCard({
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-orange-200">
-            <UtensilsCrossed className="h-10 w-10" />
-          </div>
+          <InitialsAvatar name={product.name} className="text-4xl" />
         )}
         <span
           className={cn(

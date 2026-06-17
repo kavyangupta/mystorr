@@ -4,6 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import { IndianRupee } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { InitialsAvatar } from "@/components/initials-avatar";
 import { formatPrice, upiPayLink, cn } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
@@ -66,9 +67,7 @@ export function StoreProductCard({
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-muted">
-            <IndianRupee className={full ? "h-12 w-12 opacity-30" : "h-8 w-8 opacity-30"} />
-          </div>
+          <InitialsAvatar name={product.name} className={full ? "text-5xl" : "text-3xl"} />
         )}
         {soldOut && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">

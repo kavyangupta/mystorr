@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal, RevealPop } from "@/components/marketing/reveal";
 import { buttonVariants } from "@/components/ui/button";
+import { InitialsAvatar } from "@/components/initials-avatar";
 import { cn } from "@/lib/utils";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { TEMPLATES } from "@/lib/marketing-content";
@@ -75,9 +76,7 @@ export async function Templates() {
                         className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-5xl">
-                        {t.emoji}
-                      </div>
+                      <InitialsAvatar name={name} className="text-5xl" />
                     )}
                     <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-ink shadow-sm backdrop-blur">
                       {t.emoji} {t.label}

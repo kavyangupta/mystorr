@@ -3,6 +3,7 @@ import { MapPin, Truck, Bell } from "lucide-react";
 import { MenuStatusBar } from "./menu-status-bar";
 import { MenuItemCard } from "./menu-item-card";
 import { StoreGrowthBanner, StoreFooter } from "./store-chrome";
+import { InitialsAvatar } from "@/components/initials-avatar";
 import {
   countdownLabel,
   istNow,
@@ -84,9 +85,7 @@ export function MenuStorefront({
                 priority
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-orange-100 text-3xl font-bold text-orange-500">
-                {store.display_name.charAt(0).toUpperCase()}
-              </div>
+              <InitialsAvatar name={store.display_name} className="text-3xl" />
             )}
           </div>
 

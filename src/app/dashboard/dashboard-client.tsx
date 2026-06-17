@@ -11,6 +11,7 @@ import {
   Plus,
   Pencil,
   Trash2,
+  Share2,
   ImageIcon,
   UtensilsCrossed,
   LogOut,
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { ConfirmDialog } from "@/components/ui/modal";
 import { ProductFormModal } from "@/components/product-form-modal";
+import { ShareStatusModal } from "@/components/share-status-modal";
 import { useToast } from "@/components/ui/toast";
 import {
   appHost,
@@ -54,6 +56,7 @@ export default function DashboardClient({
 
   const [modalOpen, setModalOpen] = React.useState(false);
   const [editing, setEditing] = React.useState<Product | null>(null);
+  const [sharing, setSharing] = React.useState<Product | null>(null);
   const [deleting, setDeleting] = React.useState<Product | null>(null);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
@@ -294,6 +297,7 @@ export default function DashboardClient({
                     setEditing(p);
                     setModalOpen(true);
                   }}
+                  onShare={() => setSharing(p)}
                   onDelete={() => setDeleting(p)}
                   onToggleAvailable={(next) => toggleAvailable(p, next)}
                 />
@@ -346,6 +350,13 @@ export default function DashboardClient({
         onSaved={onSaved}
       />
 
+      <ShareStatusModal
+        open={!!sharing}
+        onClose={() => setSharing(null)}
+        product={sharing}
+        store={store}
+      />
+
       <ConfirmDialog
         open={!!deleting}
         title="Delete product?"
@@ -362,12 +373,14 @@ function ProductRow({
   product,
   menuMode,
   onEdit,
+  onShare,
   onDelete,
   onToggleAvailable,
 }: {
   product: Product;
   menuMode: boolean;
   onEdit: () => void;
+  onShare: () => void;
   onDelete: () => void;
   onToggleAvailable: (next: boolean) => void;
 }) {
@@ -422,6 +435,14 @@ function ProductRow({
           onChange={onToggleAvailable}
           label="Available"
         />
+        <button
+          onClick={onShare}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-background hover:text-brand"
+          aria-label="Share to Status"
+          title="Share to Status"
+        >
+          <Share2 className="h-4 w-4" />
+        </button>
         <button
           onClick={onEdit}
           className="flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-background hover:text-ink"
