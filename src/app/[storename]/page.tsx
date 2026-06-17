@@ -69,6 +69,12 @@ export default async function StorefrontPage({
     .order("created_at", { ascending: false });
   const products = (data as Product[]) || [];
 
+  // Layout density by category (visuals/branding unchanged):
+  // jewellery & clothing → single-column 4:5 cards; homemade (and legacy
+  // catalogue stores with no category) → 2-col square grid.
+  const singleColumn =
+    store.category === "jewellery" || store.category === "clothing";
+
   return (
     <div className="min-h-screen bg-background">
       <StoreGrowthBanner />
@@ -160,6 +166,18 @@ export default async function StorefrontPage({
                 <p className="text-sm text-muted">No products yet</p>
               </div>
             )
+          ) : singleColumn ? (
+            <div className="space-y-4">
+              {products.map((p) => (
+                <StoreProductCard
+                  key={p.id}
+                  product={p}
+                  store={store}
+                  storeOpen={store.is_open}
+                  variant="full"
+                />
+              ))}
+            </div>
           ) : (
             <div className="grid grid-cols-2 gap-2.5">
               {products.map((p) => (

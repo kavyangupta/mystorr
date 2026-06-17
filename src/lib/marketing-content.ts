@@ -1,7 +1,59 @@
 // Shared marketing copy for the homepage and /how-it-works.
 // Centralised so routes never drift out of sync.
 
+import type { StoreCategory } from "@/lib/types";
+
 export type Lang = "en" | "hi";
+
+// ---------------------------------------------------------------------------
+// Templates — live demo shops shown in the "Choose your template" gallery.
+// `slug` points at a real storefront; `category` is passed to /login so
+// onboarding can pre-select it. `name`/`emoji` are fallbacks used until the
+// real demo store (and its photo) loads.
+// ---------------------------------------------------------------------------
+export type Template = {
+  category: StoreCategory;
+  slug: string;
+  label: string;
+  emoji: string;
+  name: string;
+  tagline: string;
+};
+
+export const TEMPLATES: Template[] = [
+  {
+    category: "jewellery",
+    slug: "riyas-jewellery",
+    label: "Jewellery & accessories",
+    emoji: "💍",
+    name: "Riya's Jewellery",
+    tagline: "Handmade with love ✨",
+  },
+  {
+    category: "clothing",
+    slug: "sanas-clothing",
+    label: "Clothing & fashion",
+    emoji: "👗",
+    name: "Sana's Clothing",
+    tagline: "Everyday & festive wear",
+  },
+  {
+    category: "homemade",
+    slug: "sunitas-pickles",
+    label: "Homemade products",
+    emoji: "🏺",
+    name: "Sunita's Pickles",
+    tagline: "Homemade & fresh",
+  },
+  {
+    category: "food",
+    slug: "meenas-tiffin",
+    label: "Daily menu / food",
+    emoji: "🍱",
+    name: "Meena's Tiffin",
+    tagline: "Fresh tiffins daily",
+  },
+];
 
 // ---------------------------------------------------------------------------
 // Hero (bilingual)

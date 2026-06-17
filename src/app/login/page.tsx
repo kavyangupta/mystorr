@@ -21,6 +21,17 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
   const [googleLoading, setGoogleLoading] = React.useState(false);
 
+  // If the visitor arrived from a homepage template (/login?category=X),
+  // stash the choice so onboarding can pre-select it after auth. localStorage
+  // survives both the email flow and the Google OAuth redirect roundtrip.
+  React.useEffect(() => {
+    const c = new URLSearchParams(window.location.search).get("category");
+    if (c && ["jewellery", "clothing", "homemade", "food"].includes(c)) {
+      localStorage.setItem("mystorr-template-category", c);
+      setMode("signup");
+    }
+  }, []);
+
   async function routeAfterAuth(userId: string) {
     const { data } = await supabase
       .from("stores")

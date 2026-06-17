@@ -19,7 +19,39 @@ import {
   isValidUpi,
   cn,
 } from "@/lib/utils";
-import type { StoreMode } from "@/lib/types";
+import type { StoreCategory } from "@/lib/types";
+
+const CATEGORIES: {
+  value: StoreCategory;
+  emoji: string;
+  title: string;
+  body: string;
+}[] = [
+  {
+    value: "jewellery",
+    emoji: "💍",
+    title: "Jewellery & accessories",
+    body: "Earrings, necklaces, bangles, handmade accessories.",
+  },
+  {
+    value: "clothing",
+    emoji: "👗",
+    title: "Clothing & fashion",
+    body: "Sarees, suits, dresses and everyday wear.",
+  },
+  {
+    value: "homemade",
+    emoji: "🏠",
+    title: "Homemade products",
+    body: "Pickles, candles, decor, crafts and more.",
+  },
+  {
+    value: "food",
+    emoji: "🍱",
+    title: "Food & daily menu",
+    body: "Home chefs and tiffins who update the menu daily.",
+  },
+];
 
 type SlugState = "idle" | "checking" | "available" | "taken" | "invalid";
 
@@ -33,8 +65,26 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
   // Step 1
   const [storeName, setStoreName] = React.useState("");
   const [displayName, setDisplayName] = React.useState("");
-  const [mode, setMode] = React.useState<StoreMode | null>(null);
+  const [category, setCategory] = React.useState<StoreCategory | null>(null);
+  // True when the category was chosen from a homepage template — we then skip
+  // the "what do you sell?" picker entirely.
+  const [presetCategory, setPresetCategory] = React.useState(false);
   const [slugState, setSlugState] = React.useState<SlugState>("idle");
+
+  // Pick up a template choice handed over by /login?category=X.
+  React.useEffect(() => {
+    const c = localStorage.getItem("mystorr-template-category");
+    if (
+      c === "jewellery" ||
+      c === "clothing" ||
+      c === "homemade" ||
+      c === "food"
+    ) {
+      setCategory(c);
+      setPresetCategory(true);
+      localStorage.removeItem("mystorr-template-category");
+    }
+  }, []);
 
   // Step 2
   const [profileImage, setProfileImage] = React.useState<string | null>(null);
@@ -71,7 +121,7 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
     slugState === "available" &&
     displayName.trim().length > 0 &&
     displayName.length <= 50 &&
-    mode !== null;
+    category !== null;
 
   const normalizedWa = normalizeWhatsApp(whatsapp);
   const upiValid = isValidUpi(upi);
@@ -95,9 +145,12 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
   }
 
   async function handleCreate() {
-    if (!step3Valid || !mode) return;
+    if (!step3Valid || !category) return;
     setSaving(true);
     try {
+      // Food sellers get the daily-menu experience; everything else is a
+      // product catalogue. Layout density is then driven by `category`.
+      const store_mode = category === "food" ? "menu" : "catalogue";
       const { error } = await supabase.from("stores").insert({
         user_id: userId,
         store_name: storeName,
@@ -106,7 +159,8 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
         profile_image_url: profileImage,
         whatsapp_number: normalizedWa,
         upi_id: upi.trim(),
-        store_mode: mode,
+        store_mode,
+        category,
         is_open: true,
         is_pro: false,
         instagram_handle: null,
@@ -211,25 +265,38 @@ export default function OnboardingFlow({ userId }: { userId: string }) {
                 />
               </div>
 
-              <div>
-                <Label>How do you sell?</Label>
-                <div className="space-y-2.5">
-                  <ModeCard
-                    emoji="📦"
-                    title="Product Catalogue"
-                    body="For selling fixed products like jewellery, clothes, homemade items."
-                    selected={mode === "catalogue"}
-                    onClick={() => setMode("catalogue")}
-                  />
-                  <ModeCard
-                    emoji="🍱"
-                    title="Daily Menu"
-                    body="For home chefs and food sellers who update their menu every morning."
-                    selected={mode === "menu"}
-                    onClick={() => setMode("menu")}
-                  />
+              {presetCategory && category ? (
+                (() => {
+                  const c = CATEGORIES.find((x) => x.value === category)!;
+                  return (
+                    <div className="flex items-center gap-3 rounded-card border-2 border-brand bg-brand/5 p-4">
+                      <span className="text-2xl">{c.emoji}</span>
+                      <div>
+                        <p className="text-sm font-bold text-ink">{c.title}</p>
+                        <p className="mt-0.5 text-xs text-muted">
+                          Your shop template — just add your details below.
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                <div>
+                  <Label>What do you sell?</Label>
+                  <div className="space-y-2.5">
+                    {CATEGORIES.map((c) => (
+                      <ModeCard
+                        key={c.value}
+                        emoji={c.emoji}
+                        title={c.title}
+                        body={c.body}
+                        selected={category === c.value}
+                        onClick={() => setCategory(c.value)}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               <Button
                 className="w-full"

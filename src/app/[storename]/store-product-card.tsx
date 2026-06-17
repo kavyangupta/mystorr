@@ -11,11 +11,15 @@ export function StoreProductCard({
   product,
   store,
   storeOpen,
+  variant = "compact",
 }: {
   product: Product;
   store: Store;
   storeOpen: boolean;
+  /** "compact" = square photo (2-col grid); "full" = 4:5 photo (single column). */
+  variant?: "compact" | "full";
 }) {
+  const full = variant === "full";
   const supabase = React.useMemo(() => createClient(), []);
   const soldOut = product.quantity_available === 0;
   const limited =
@@ -46,34 +50,48 @@ export function StoreProductCard({
 
   return (
     <div className="overflow-hidden rounded-card bg-card shadow-card">
-      <div className="relative aspect-square w-full bg-background">
+      <div
+        className={cn(
+          "relative w-full bg-background",
+          full ? "aspect-[4/5]" : "aspect-square"
+        )}
+      >
         {product.image_url ? (
           <Image
             src={product.image_url}
             alt={product.name}
             fill
             loading="lazy"
-            sizes="(max-width: 480px) 50vw, 240px"
+            sizes={full ? "(max-width: 480px) 100vw, 448px" : "(max-width: 480px) 50vw, 240px"}
             className="object-cover"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-muted">
-            <IndianRupee className="h-8 w-8 opacity-30" />
+            <IndianRupee className={full ? "h-12 w-12 opacity-30" : "h-8 w-8 opacity-30"} />
           </div>
         )}
         {soldOut && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-            <span className="text-sm font-bold text-white">Sold Out</span>
+            <span className={cn("font-bold text-white", full ? "text-lg" : "text-sm")}>
+              Sold Out
+            </span>
           </div>
         )}
       </div>
 
-      <div className="p-2.5">
-        <p className="line-clamp-2 min-h-[34px] text-[13px] font-medium text-ink">
+      <div className={full ? "p-4" : "p-2.5"}>
+        <p
+          className={cn(
+            "font-medium text-ink",
+            full
+              ? "line-clamp-2 text-base"
+              : "line-clamp-2 min-h-[34px] text-[13px]"
+          )}
+        >
           {product.name}
         </p>
-        <div className="mt-1 flex items-center justify-between gap-1">
-          <span className="text-[15px] font-bold text-brand">
+        <div className={cn("flex items-center justify-between gap-1", full ? "mt-1.5" : "mt-1")}>
+          <span className={cn("font-bold text-brand", full ? "text-xl" : "text-[15px]")}>
             {formatPrice(product.price)}
           </span>
           {limited && (
@@ -87,11 +105,12 @@ export function StoreProductCard({
           onClick={payViaUpi}
           disabled={disabled || !store.upi_id}
           className={cn(
-            "mt-2.5 flex h-11 w-full items-center justify-center gap-1.5 rounded-lg text-sm font-bold text-white transition-colors",
+            "flex w-full items-center justify-center gap-1.5 rounded-lg font-bold text-white transition-colors",
+            full ? "mt-3 h-12 text-base" : "mt-2.5 h-11 text-sm",
             disabled || !store.upi_id ? "bg-zinc-300" : "bg-upi hover:bg-upi/90"
           )}
         >
-          <IndianRupee className="h-4 w-4" />
+          <IndianRupee className={full ? "h-5 w-5" : "h-4 w-4"} />
           Pay via UPI
         </button>
       </div>

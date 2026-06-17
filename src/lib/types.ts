@@ -1,5 +1,7 @@
 export type StoreMode = "catalogue" | "menu";
 
+export type StoreCategory = "jewellery" | "clothing" | "homemade" | "food";
+
 export type ProductCategory =
   | "todays_special"
   | "always_available"
@@ -18,6 +20,7 @@ export type Store = {
   whatsapp_number: string | null;
   upi_id: string | null;
   store_mode: StoreMode;
+  category: StoreCategory | null;
   is_open: boolean;
   is_pro: boolean;
   // daily menu mode
@@ -73,6 +76,7 @@ export interface Database {
           Store,
           | "id"
           | "created_at"
+          | "category"
           | "order_start_time"
           | "order_end_time"
           | "operating_days"
@@ -84,6 +88,7 @@ export interface Database {
         > & {
           id?: string;
           created_at?: string;
+          category?: StoreCategory | null;
           order_start_time?: string | null;
           order_end_time?: string | null;
           operating_days?: number[];
