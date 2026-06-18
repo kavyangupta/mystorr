@@ -8,6 +8,7 @@ import { Trust } from "@/components/marketing/sections/trust";
 import { HowItWorks } from "@/components/marketing/sections/how-it-works";
 import { Templates } from "@/components/marketing/sections/templates";
 import { WhoItsFor } from "@/components/marketing/sections/who-its-for";
+import { Features } from "@/components/marketing/sections/features";
 import { Testimonials } from "@/components/marketing/sections/testimonials";
 import { FinalCta } from "@/components/marketing/sections/final-cta";
 
@@ -37,6 +38,7 @@ export default function HomePage() {
           <HowItWorks />
           <Templates />
           <WhoItsFor />
+          <Features />
           <Testimonials />
           <FinalCta />
         </main>
