@@ -5,7 +5,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { StoreProductCard } from "./store-product-card";
 import { MenuStorefront } from "./menu-storefront";
 import { StoreGrowthBanner, StoreFooter } from "./store-chrome";
-import { InitialsAvatar } from "@/components/initials-avatar";
+import { PhotoFallback } from "@/components/photo-fallback";
+import { categoryTheme, placeholderTheme } from "@/lib/category-theme";
 import { APP_NAME } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
@@ -76,6 +77,11 @@ export default async function StorefrontPage({
   const singleColumn =
     store.category === "jewellery" || store.category === "clothing";
 
+  // Category identity (matches the homepage template cards). Null for legacy
+  // no-category stores, which keep the original purple/brand look.
+  const theme = categoryTheme(store.category);
+  const ph = placeholderTheme(store.category);
+
   return (
     <div className="min-h-screen bg-background">
       <StoreGrowthBanner />
@@ -87,8 +93,20 @@ export default async function StorefrontPage({
         )}
 
         {/* Store header */}
-        <header className="rounded-xl bg-gradient-to-b from-white to-[#F5F3FF] p-5 text-center shadow-card">
-          <div className="mx-auto h-[90px] w-[90px] overflow-hidden rounded-full ring-[3px] ring-brand">
+        <header
+          className={
+            "rounded-xl p-5 text-center shadow-card" +
+            (theme ? "" : " bg-gradient-to-b from-white to-[#F5F3FF]")
+          }
+          style={theme ? { backgroundColor: theme.tint } : undefined}
+        >
+          <div
+            className={
+              "mx-auto h-[90px] w-[90px] overflow-hidden rounded-full" +
+              (theme ? "" : " ring-[3px] ring-brand")
+            }
+            style={theme ? { boxShadow: `0 0 0 3px ${theme.accent}` } : undefined}
+          >
             {store.profile_image_url ? (
               <Image
                 src={store.profile_image_url}
@@ -99,7 +117,7 @@ export default async function StorefrontPage({
                 priority
               />
             ) : (
-              <InitialsAvatar name={store.display_name} className="text-3xl" />
+              <PhotoFallback accent={ph.accent} />
             )}
           </div>
 
@@ -114,14 +132,26 @@ export default async function StorefrontPage({
             <span
               className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
                 store.is_open
-                  ? "bg-whatsapp/10 text-whatsapp"
+                  ? theme
+                    ? ""
+                    : "bg-whatsapp/10 text-whatsapp"
                   : "bg-zinc-100 text-muted"
               }`}
+              style={
+                store.is_open && theme
+                  ? { backgroundColor: `${theme.accent}1A`, color: theme.accent }
+                  : undefined
+              }
             >
               <span
                 className={`h-2 w-2 rounded-full ${
-                  store.is_open ? "bg-whatsapp" : "bg-muted"
+                  store.is_open ? (theme ? "" : "bg-whatsapp") : "bg-muted"
                 }`}
+                style={
+                  store.is_open && theme
+                    ? { backgroundColor: theme.accent }
+                    : undefined
+                }
               />
               {store.is_open ? "Open" : "Closed"}
             </span>

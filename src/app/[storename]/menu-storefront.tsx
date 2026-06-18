@@ -3,7 +3,8 @@ import { MapPin, Truck, Bell } from "lucide-react";
 import { MenuStatusBar } from "./menu-status-bar";
 import { MenuItemCard } from "./menu-item-card";
 import { StoreGrowthBanner, StoreFooter } from "./store-chrome";
-import { InitialsAvatar } from "@/components/initials-avatar";
+import { PhotoFallback } from "@/components/photo-fallback";
+import { placeholderTheme } from "@/lib/category-theme";
 import {
   countdownLabel,
   istNow,
@@ -22,6 +23,7 @@ export function MenuStorefront({
 }) {
   const now = istNow();
   const today = now.getDay();
+  const ph = placeholderTheme(store.category);
 
   // Ordering disabled (visual) when not open — buttons stay live unless closed.
   const status = getOrderingStatus(store, now);
@@ -61,7 +63,14 @@ export function MenuStorefront({
     0;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FFFBF5]">
+    <div
+      className="relative min-h-screen overflow-hidden"
+      style={{
+        backgroundColor: "#FFFBF1",
+        backgroundImage:
+          "repeating-linear-gradient(0deg, rgba(201,162,39,0.06) 0px, rgba(201,162,39,0.06) 1px, transparent 1px, transparent 34px)",
+      }}
+    >
       <StoreGrowthBanner />
       {/* subtle food emoji backdrop */}
       <div
@@ -73,8 +82,18 @@ export function MenuStorefront({
 
       <div className="relative mx-auto max-w-app px-4 pb-8 pt-4">
         {/* Kitchen header */}
-        <header className="rounded-2xl bg-white p-5 text-center shadow-card">
-          <div className="mx-auto h-20 w-20 overflow-hidden rounded-full ring-[3px] ring-[#F97316]">
+        <header className="relative mt-3 rounded-2xl border border-[#EFE3C0] bg-white p-5 pt-6 text-center shadow-card">
+          {/* Decorative gold ribbon-tab (booklet motif) */}
+          <span
+            aria-hidden
+            className="absolute left-1/2 top-0 h-7 w-14 -translate-x-1/2 -translate-y-1/2"
+            style={{
+              backgroundColor: "#C9A227",
+              clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 68%, 0 100%)",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.12)",
+            }}
+          />
+          <div className="mx-auto h-20 w-20 overflow-hidden rounded-full ring-[3px] ring-[#C9A227]">
             {store.profile_image_url ? (
               <Image
                 src={store.profile_image_url}
@@ -85,7 +104,7 @@ export function MenuStorefront({
                 priority
               />
             ) : (
-              <InitialsAvatar name={store.display_name} className="text-3xl" />
+              <PhotoFallback accent={ph.accent} />
             )}
           </div>
 
@@ -148,7 +167,7 @@ export function MenuStorefront({
             {/* Today's Special */}
             {todaysSpecial.length > 0 && (
               <section>
-                <SectionTitle emoji="⭐" title="Today's Special" accent="#F97316" />
+                <SectionTitle emoji="⭐" title="Today's Special" />
                 <div className="space-y-3.5">
                   {todaysSpecial.map((p) => (
                     <MenuItemCard
@@ -170,9 +189,8 @@ export function MenuStorefront({
                 <SectionTitle
                   emoji="📅"
                   title={`${DAY_NAMES[today]} Special`}
-                  accent="#534AB7"
                 />
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="divide-y divide-[#EFE3C0] overflow-hidden rounded-xl border border-[#EFE3C0] bg-white/80">
                   {weekly.map((p) => (
                     <MenuItemCard
                       key={p.id}
@@ -191,8 +209,8 @@ export function MenuStorefront({
             {/* Festival Special */}
             {festival.length > 0 && (
               <section>
-                <SectionTitle emoji="🎉" title="Festival Special" accent="#D97706" />
-                <div className="grid grid-cols-2 gap-2.5">
+                <SectionTitle emoji="🎉" title="Festival Special" />
+                <div className="divide-y divide-[#EFE3C0] overflow-hidden rounded-xl border border-[#EFE3C0] bg-white/80">
                   {festival.map((p) => (
                     <MenuItemCard
                       key={p.id}
@@ -215,12 +233,8 @@ export function MenuStorefront({
             {/* Always Available */}
             {always.length > 0 && (
               <section>
-                <SectionTitle
-                  emoji="🍱"
-                  title="Always Available"
-                  accent="#534AB7"
-                />
-                <div className="grid grid-cols-2 gap-2.5">
+                <SectionTitle emoji="🍱" title="Always Available" />
+                <div className="divide-y divide-[#EFE3C0] overflow-hidden rounded-xl border border-[#EFE3C0] bg-white/80">
                   {always.map((p) => (
                     <MenuItemCard
                       key={p.id}
@@ -238,8 +252,8 @@ export function MenuStorefront({
             {/* Pre-order */}
             {preorder.length > 0 && (
               <section>
-                <SectionTitle emoji="📞" title="Pre-order" accent="#534AB7" />
-                <div className="space-y-2.5">
+                <SectionTitle emoji="📞" title="Pre-order" />
+                <div className="divide-y divide-[#EFE3C0] overflow-hidden rounded-xl border border-[#EFE3C0] bg-white/80">
                   {preorder.map((p) => (
                     <MenuItemCard
                       key={p.id}
@@ -262,25 +276,16 @@ export function MenuStorefront({
   );
 }
 
-function SectionTitle({
-  emoji,
-  title,
-  accent,
-}: {
-  emoji: string;
-  title: string;
-  accent: string;
-}) {
+// Menu-booklet section header: centred title framed by a thin gold rule above
+// and below, matching the page's gold tone (#C9A227).
+function SectionTitle({ emoji, title }: { emoji: string; title: string }) {
   return (
-    <div className="mb-3 flex items-center gap-2">
-      <span
-        className="h-5 w-1 rounded-full"
-        style={{ backgroundColor: accent }}
-        aria-hidden
-      />
-      <h2 className="text-lg font-extrabold text-ink">
+    <div className="mb-3">
+      <div className="h-px w-full" style={{ backgroundColor: "#C9A227" }} aria-hidden />
+      <h2 className="py-2 text-center text-lg font-extrabold tracking-wide text-ink">
         {emoji} {title}
       </h2>
+      <div className="h-px w-full" style={{ backgroundColor: "#C9A227" }} aria-hidden />
     </div>
   );
 }

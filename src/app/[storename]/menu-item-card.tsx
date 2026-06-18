@@ -4,9 +4,22 @@ import * as React from "react";
 import Image from "next/image";
 import { Minus, Plus, Clock, Users, IndianRupee } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { InitialsAvatar } from "@/components/initials-avatar";
+import { PhotoFallback } from "@/components/photo-fallback";
+import { placeholderTheme } from "@/lib/category-theme";
 import { formatPrice, upiPayLink, servesLabel, cn } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
+
+// Dotted leader connecting a product name to its right-aligned price — the
+// printed-menu motif. Sits on the text baseline.
+function Leader() {
+  return (
+    <span
+      aria-hidden
+      className="mx-1 -translate-y-1 flex-1 border-b border-dotted"
+      style={{ borderColor: "#C9A227" }}
+    />
+  );
+}
 
 type Variant = "feature" | "compact" | "preorder";
 type Accent = "orange" | "purple" | "amber";
@@ -43,6 +56,7 @@ export function MenuItemCard({
 }) {
   const supabase = React.useMemo(() => createClient(), []);
   const a = ACCENTS[accent];
+  const ph = placeholderTheme(store.category);
 
   const limited =
     product.quantity_available > 0 && product.quantity_available !== -1;
@@ -75,11 +89,11 @@ export function MenuItemCard({
 
   const dietary = product.dietary_tags || [];
 
-  // ----- Pre-order list row ------------------------------------------------
+  // ----- Pre-order booklet row ---------------------------------------------
   if (variant === "preorder") {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-line bg-white p-3">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-orange-50">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
           {product.image_url ? (
             <Image
               src={product.image_url}
@@ -90,79 +104,102 @@ export function MenuItemCard({
               className="object-cover"
             />
           ) : (
-            <InitialsAvatar name={product.name} className="text-base" />
+            <PhotoFallback accent={ph.accent} />
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold text-ink">{product.name}</p>
+          <div className="flex items-baseline gap-1">
+            <p className="min-w-0 shrink truncate text-sm font-bold text-ink">
+              {product.name}
+            </p>
+            <Leader />
+            <span className={cn("shrink-0 text-sm font-bold", a.price)}>
+              {formatPrice(product.price)}
+            </span>
+          </div>
           {product.description && (
-            <p className="truncate text-xs text-muted">{product.description}</p>
+            <p className="mt-0.5 truncate text-xs text-muted">
+              {product.description}
+            </p>
           )}
-          <span className={cn("text-sm font-bold", a.price)}>
-            {formatPrice(product.price)}
-          </span>
+          <button
+            onClick={() => payViaUpi(product.price, product.name)}
+            disabled={!store.upi_id}
+            className="mt-1.5 flex h-9 items-center justify-center gap-1.5 rounded-lg bg-upi px-3 text-xs font-bold text-white hover:bg-upi/90 disabled:bg-zinc-300"
+          >
+            <IndianRupee className="h-3.5 w-3.5" /> Pay via UPI
+          </button>
         </div>
-        <button
-          onClick={() => payViaUpi(product.price, product.name)}
-          disabled={!store.upi_id}
-          className="flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-upi px-3 text-xs font-bold text-white hover:bg-upi/90 disabled:bg-zinc-300"
-        >
-          <IndianRupee className="h-3.5 w-3.5" /> Pay via UPI
-        </button>
       </div>
     );
   }
 
-  // ----- Compact grid card -------------------------------------------------
+  // ----- Compact booklet row -----------------------------------------------
   if (variant === "compact") {
     return (
-      <div className="overflow-hidden rounded-xl border border-line bg-white">
-        <div className="relative aspect-square w-full bg-orange-50">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
           {product.image_url ? (
             <Image
               src={product.image_url}
               alt={product.name}
               fill
               loading="lazy"
-              sizes="(max-width: 480px) 50vw, 240px"
+              sizes="56px"
               className="object-cover"
             />
           ) : (
-            <InitialsAvatar name={product.name} className="text-2xl" />
-          )}
-          {badge && (
-            <span
-              className={cn(
-                "absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-bold",
-                a.badge
-              )}
-            >
-              {badge}
-            </span>
-          )}
-          {soldOut && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <span className="text-sm font-bold text-white">Sold Out</span>
-            </div>
+            <PhotoFallback accent={ph.accent} />
           )}
         </div>
-        <div className="p-2.5">
-          <p className="line-clamp-2 min-h-[34px] text-[13px] font-semibold text-ink">
-            {product.name}
-          </p>
-          <span className={cn("text-[15px] font-bold", a.price)}>
-            {formatPrice(product.price)}
-          </span>
-          <button
-            onClick={() => payViaUpi(product.price, product.name)}
-            disabled={disabled || !store.upi_id}
-            className={cn(
-              "mt-2 flex h-10 w-full items-center justify-center gap-1.5 rounded-lg text-xs font-bold text-white transition-colors",
-              disabled || !store.upi_id ? "bg-zinc-300" : "bg-upi hover:bg-upi/90"
+        <div className="min-w-0 flex-1">
+          <div className="flex items-baseline gap-1">
+            <p className="min-w-0 shrink truncate text-[15px] font-semibold text-ink">
+              {product.name}
+            </p>
+            <Leader />
+            <span className={cn("shrink-0 text-[15px] font-bold", a.price)}>
+              {formatPrice(product.price)}
+            </span>
+          </div>
+          {product.description && (
+            <p className="mt-0.5 truncate text-xs text-muted">
+              {product.description}
+            </p>
+          )}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+            {badge && (
+              <span
+                className={cn(
+                  "rounded-full px-2 py-0.5 text-[10px] font-bold",
+                  a.badge
+                )}
+              >
+                {badge}
+              </span>
             )}
-          >
-            <IndianRupee className="h-3.5 w-3.5" /> Pay via UPI
-          </button>
+            {limited && !soldOut && (
+              <span className="text-[11px] font-semibold text-amber-600">
+                {product.quantity_available} left
+              </span>
+            )}
+            {soldOut ? (
+              <span className="text-xs font-bold text-red-500">Sold out</span>
+            ) : (
+              <button
+                onClick={() => payViaUpi(product.price, product.name)}
+                disabled={disabled || !store.upi_id}
+                className={cn(
+                  "flex h-9 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold text-white transition-colors",
+                  disabled || !store.upi_id
+                    ? "bg-zinc-300"
+                    : "bg-upi hover:bg-upi/90"
+                )}
+              >
+                <IndianRupee className="h-3.5 w-3.5" /> Pay via UPI
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -182,7 +219,7 @@ export function MenuItemCard({
             className="object-cover"
           />
         ) : (
-          <InitialsAvatar name={product.name} className="text-4xl" />
+          <PhotoFallback inset accent={ph.accent} tint={ph.tint} />
         )}
         <span
           className={cn(
@@ -207,8 +244,11 @@ export function MenuItemCard({
       </div>
 
       <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-extrabold text-ink">{product.name}</h3>
+        <div className="flex items-baseline gap-1">
+          <h3 className="min-w-0 shrink truncate text-lg font-extrabold text-ink">
+            {product.name}
+          </h3>
+          <Leader />
           <span className={cn("shrink-0 text-lg font-extrabold", a.price)}>
             {formatPrice(product.price)}
           </span>

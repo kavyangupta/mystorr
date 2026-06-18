@@ -4,7 +4,8 @@ import * as React from "react";
 import Image from "next/image";
 import { IndianRupee } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { InitialsAvatar } from "@/components/initials-avatar";
+import { PhotoFallback } from "@/components/photo-fallback";
+import { categoryTheme, placeholderTheme } from "@/lib/category-theme";
 import { formatPrice, upiPayLink, cn } from "@/lib/utils";
 import type { Product, Store } from "@/lib/types";
 
@@ -21,6 +22,8 @@ export function StoreProductCard({
   variant?: "compact" | "full";
 }) {
   const full = variant === "full";
+  const theme = categoryTheme(store.category);
+  const ph = placeholderTheme(store.category);
   const supabase = React.useMemo(() => createClient(), []);
   const soldOut = product.quantity_available === 0;
   const limited =
@@ -50,7 +53,12 @@ export function StoreProductCard({
   }
 
   return (
-    <div className="overflow-hidden rounded-card bg-card shadow-card">
+    <div
+      className={cn(
+        "overflow-hidden bg-card shadow-card",
+        theme?.rounded ?? "rounded-card"
+      )}
+    >
       <div
         className={cn(
           "relative w-full bg-background",
@@ -67,7 +75,7 @@ export function StoreProductCard({
             className="object-cover"
           />
         ) : (
-          <InitialsAvatar name={product.name} className={full ? "text-5xl" : "text-3xl"} />
+          <PhotoFallback inset accent={ph.accent} tint={ph.tint} />
         )}
         {soldOut && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/50">
@@ -90,7 +98,14 @@ export function StoreProductCard({
           {product.name}
         </p>
         <div className={cn("flex items-center justify-between gap-1", full ? "mt-1.5" : "mt-1")}>
-          <span className={cn("font-bold text-brand", full ? "text-xl" : "text-[15px]")}>
+          <span
+            className={cn(
+              "font-bold",
+              full ? "text-xl" : "text-[15px]",
+              theme ? "" : "text-brand"
+            )}
+            style={theme ? { color: theme.accent } : undefined}
+          >
             {formatPrice(product.price)}
           </span>
           {limited && (
@@ -106,8 +121,17 @@ export function StoreProductCard({
           className={cn(
             "flex w-full items-center justify-center gap-1.5 rounded-lg font-bold text-white transition-colors",
             full ? "mt-3 h-12 text-base" : "mt-2.5 h-11 text-sm",
-            disabled || !store.upi_id ? "bg-zinc-300" : "bg-upi hover:bg-upi/90"
+            disabled || !store.upi_id
+              ? "bg-zinc-300"
+              : theme
+              ? "hover:opacity-90"
+              : "bg-upi hover:bg-upi/90"
           )}
+          style={
+            !(disabled || !store.upi_id) && theme
+              ? { backgroundColor: theme.accent }
+              : undefined
+          }
         >
           <IndianRupee className={full ? "h-5 w-5" : "h-4 w-4"} />
           Pay via UPI
