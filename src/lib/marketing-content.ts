@@ -226,6 +226,16 @@ export const FEATURES: Feature[] = [
     title: "Share anywhere",
     body: "One link for Instagram, WhatsApp status, and every family group.",
   },
+  {
+    emoji: "✍️",
+    title: "Never write a product description again",
+    body: "Type a few words about what you're selling, Mystorr writes the rest — sounds like you, not a robot.",
+  },
+  {
+    emoji: "📸",
+    title: "Make any phone photo look like a real shop",
+    body: "Pick a backdrop style and your products instantly look styled — no camera, no editing skills needed.",
+  },
 ];
 
 // ---------------------------------------------------------------------------

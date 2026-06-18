@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,30 @@ import {
   DAY_NAMES,
   DAY_NAMES_SHORT,
 } from "@/lib/utils";
-import type { Product, ProductCategory, StoreMode } from "@/lib/types";
+import type {
+  BackdropStyle,
+  Product,
+  ProductCategory,
+  StoreMode,
+} from "@/lib/types";
+
+const BACKDROP_OPTIONS: {
+  value: BackdropStyle;
+  label: string;
+  swatch: string;
+}[] = [
+  { value: "plain", label: "Plain", swatch: "bg-background border border-line" },
+  {
+    value: "soft-gradient",
+    label: "Soft",
+    swatch: "bg-gradient-to-br from-rose-100 via-white to-violet-200",
+  },
+  {
+    value: "boutique",
+    label: "Boutique",
+    swatch: "bg-[#F6F1EA] ring-1 ring-inset ring-[#E7DDCD]",
+  },
+];
 
 interface ProductFormModalProps {
   open: boolean;
@@ -50,6 +73,12 @@ export function ProductFormModal({
   const [priceRupees, setPriceRupees] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [available, setAvailable] = React.useState(true);
+  const [backdrop, setBackdrop] = React.useState<BackdropStyle>("plain");
+
+  // AI description writer
+  const [aiPhrase, setAiPhrase] = React.useState("");
+  const [aiLoading, setAiLoading] = React.useState(false);
+  const [aiNote, setAiNote] = React.useState<string | null>(null);
 
   // menu-mode fields
   const [category, setCategory] = React.useState<ProductCategory>("todays_special");
@@ -70,12 +99,16 @@ export function ProductFormModal({
   React.useEffect(() => {
     if (!open) return;
     setShowMore(false);
+    setAiPhrase("");
+    setAiNote(null);
+    setAiLoading(false);
     if (product) {
       setImage(product.image_url);
       setName(product.name);
       setPriceRupees(String(product.price / 100));
       setDescription(product.description || "");
       setAvailable(product.is_available);
+      setBackdrop(product.backdrop_style || "plain");
       setCategory(product.category);
       setDietary(product.dietary_tags || []);
       setServes(product.serves || "");
@@ -93,6 +126,7 @@ export function ProductFormModal({
       setPriceRupees("");
       setDescription("");
       setAvailable(true);
+      setBackdrop("plain");
       setCategory(defaultCategory || "todays_special");
       setDietary([]);
       setServes("");
@@ -109,6 +143,41 @@ export function ProductFormModal({
     setDietary((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
+  }
+
+  async function handleGenerateDescription() {
+    const phrase = aiPhrase.trim();
+    if (!phrase) {
+      toast("Type a few words about your product first", "error");
+      return;
+    }
+    setAiLoading(true);
+    setAiNote(null);
+    try {
+      const res = await fetch("/api/ai/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phrase }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        // Friendly limit / error message — no description set.
+        setAiNote(data.message || data.error || "Couldn't generate. Try again.");
+        return;
+      }
+      setDescription(data.description || "");
+      setAiNote(
+        typeof data.remaining === "number"
+          ? `✨ Done — ${data.remaining} free generation${
+              data.remaining === 1 ? "" : "s"
+            } left this month. Edit it to sound just like you.`
+          : "✨ Done — edit it to sound just like you."
+      );
+    } catch {
+      setAiNote("Couldn't generate right now. Please try again.");
+    } finally {
+      setAiLoading(false);
+    }
   }
 
   async function handleSave() {
@@ -149,6 +218,7 @@ export function ProductFormModal({
         price: rupeesToPaise(price),
         image_url: image,
         is_available: available,
+        backdrop_style: backdrop,
       };
 
       const payload = isMenu
@@ -226,6 +296,36 @@ export function ProductFormModal({
           </div>
 
           <div>
+            <Label>Photo backdrop</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {BACKDROP_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setBackdrop(opt.value)}
+                  className={cn(
+                    "rounded-lg border-2 p-2 text-center transition-colors",
+                    backdrop === opt.value ? "border-brand bg-brand/5" : "border-line"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "mx-auto mb-1.5 block h-10 w-full rounded-md",
+                      opt.swatch
+                    )}
+                  />
+                  <span className="block text-xs font-semibold text-ink">
+                    {opt.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              A styled background makes a phone photo look like a real shop.
+            </p>
+          </div>
+
+          <div>
             <Label htmlFor="p-name">Name</Label>
             <Input
               id="p-name"
@@ -274,6 +374,32 @@ export function ProductFormModal({
 
           <div>
             <Label htmlFor="p-desc">Description (optional)</Label>
+
+            {/* AI description writer */}
+            <div className="mb-2 rounded-lg border border-brand/30 bg-brand/5 p-2.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-brand">
+                <Sparkles className="h-3.5 w-3.5" /> Let Mystorr write it for you
+              </div>
+              <div className="mt-2 flex gap-2">
+                <Input
+                  value={aiPhrase}
+                  maxLength={120}
+                  placeholder="e.g. handmade silver jhumka earrings"
+                  onChange={(e) => setAiPhrase(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="brand"
+                  className="shrink-0 px-3"
+                  onClick={handleGenerateDescription}
+                  loading={aiLoading}
+                >
+                  Generate
+                </Button>
+              </div>
+              {aiNote && <p className="mt-1.5 text-xs text-muted">{aiNote}</p>}
+            </div>
+
             <Textarea
               id="p-desc"
               value={description}

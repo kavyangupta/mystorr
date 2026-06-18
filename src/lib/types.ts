@@ -9,6 +9,8 @@ export type ProductCategory =
   | "festival_special"
   | "preorder";
 
+export type BackdropStyle = "plain" | "soft-gradient" | "boutique";
+
 export type Store = {
   id: string;
   user_id: string;
@@ -32,6 +34,9 @@ export type Store = {
   advance_order_notice: string | null;
   holiday_mode: boolean;
   holiday_return_date: string | null;
+  // AI description writer quota (per calendar month)
+  ai_generations_used: number;
+  ai_generations_reset: string | null; // date the counter resets
   created_at: string;
 }
 
@@ -53,6 +58,7 @@ export type Product = {
   prep_time_mins: number | null;
   dietary_tags: string[];
   serves: string | null; // '1' | '2' | '4' | 'family'
+  backdrop_style: BackdropStyle; // CSS-only styled photo backdrop
   order_index: number;
   created_at: string;
 }
@@ -85,6 +91,8 @@ export interface Database {
           | "advance_order_notice"
           | "holiday_mode"
           | "holiday_return_date"
+          | "ai_generations_used"
+          | "ai_generations_reset"
         > & {
           id?: string;
           created_at?: string;
@@ -97,6 +105,8 @@ export interface Database {
           advance_order_notice?: string | null;
           holiday_mode?: boolean;
           holiday_return_date?: string | null;
+          ai_generations_used?: number;
+          ai_generations_reset?: string | null;
         };
         Update: Partial<Omit<Store, "id" | "user_id" | "created_at">>;
         Relationships: [];
@@ -114,6 +124,7 @@ export interface Database {
           | "prep_time_mins"
           | "dietary_tags"
           | "serves"
+          | "backdrop_style"
         > & {
           id?: string;
           created_at?: string;
@@ -124,6 +135,7 @@ export interface Database {
           prep_time_mins?: number | null;
           dietary_tags?: string[];
           serves?: string | null;
+          backdrop_style?: BackdropStyle;
         };
         Update: Partial<Omit<Product, "id" | "store_id" | "created_at">>;
         Relationships: [];

@@ -7,7 +7,22 @@ import { createClient } from "@/lib/supabase/client";
 import { PhotoFallback } from "@/components/photo-fallback";
 import { categoryTheme, placeholderTheme } from "@/lib/category-theme";
 import { formatPrice, upiPayLink, cn } from "@/lib/utils";
-import type { Product, Store } from "@/lib/types";
+import type { BackdropStyle, Product, Store } from "@/lib/types";
+
+// CSS-only styled photo backdrops. Non-plain variants pad the frame so the
+// photo sits inset on a styled background — making a plain phone snap look
+// like a real shop. No extra markup, no JS.
+const BACKDROPS: Record<BackdropStyle, { wrap: string; img: string }> = {
+  plain: { wrap: "bg-background", img: "" },
+  "soft-gradient": {
+    wrap: "bg-gradient-to-br from-rose-50 via-white to-violet-100 p-3",
+    img: "rounded-xl shadow-md",
+  },
+  boutique: {
+    wrap: "bg-[#F6F1EA] p-4 ring-1 ring-inset ring-[#E7DDCD]",
+    img: "rounded-lg shadow-lg",
+  },
+};
 
 export function StoreProductCard({
   product,
@@ -29,6 +44,7 @@ export function StoreProductCard({
   const limited =
     product.quantity_available > 0 && product.quantity_available !== -1;
   const disabled = soldOut || !storeOpen;
+  const backdrop = BACKDROPS[product.backdrop_style] ?? BACKDROPS.plain;
 
   async function payViaUpi() {
     if (disabled || !store.upi_id) return;
@@ -61,8 +77,9 @@ export function StoreProductCard({
     >
       <div
         className={cn(
-          "relative w-full bg-background",
-          full ? "aspect-[4/5]" : "aspect-square"
+          "relative w-full",
+          full ? "aspect-[4/5]" : "aspect-square",
+          backdrop.wrap
         )}
       >
         {product.image_url ? (
@@ -72,7 +89,7 @@ export function StoreProductCard({
             fill
             loading="lazy"
             sizes={full ? "(max-width: 480px) 100vw, 448px" : "(max-width: 480px) 50vw, 240px"}
-            className="object-cover"
+            className={cn("object-cover", backdrop.img)}
           />
         ) : (
           <PhotoFallback inset accent={ph.accent} tint={ph.tint} />
